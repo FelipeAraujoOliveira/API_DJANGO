@@ -4,8 +4,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import User,Course
-from .serializers import UserSerializer,CourseSerializer
+from .models import User,Course,Area,Organization
+from .serializers import UserSerializer,CourseSerializer,AreaSerializer,OrganizationSerializer
 
 @api_view(['get'])
 def get_users(request):
@@ -80,3 +80,22 @@ def user_manager(request):
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
     
+
+@api_view(['GET'])
+def get_areas(request):
+    if request.method == 'GET':
+        areas = Area.objects.all()
+        serializer = AreaSerializer(areas,many=True)
+        return Response(serializer.data)
+    
+    return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+def get_organizations(request):
+    if request.method == 'GET':
+        organizations = Organization.objects.all()
+        serializer = OrganizationSerializer(organizations,many=True)
+        return Response(serializer.data)
+    
+    return Response(status=status.HTTP_404_NOT_FOUND)
