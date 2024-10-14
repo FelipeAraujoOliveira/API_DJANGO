@@ -4,51 +4,28 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import User,Course
-from .serializers import UserSerializer,CourseSerializer
+from .models import User,Course,Area,Organization
+from .serializers import UserSerializer,CourseSerializer,AreaSerializer,OrganizationSerializer
 
-@api_view(['get'])
-def get_users(request):
-    if request.method == 'GET':
-        users = User.objects.all()
-        serializer = UserSerializer(users,many=True)
-    
-        return Response(serializer.data)
-    
-    return Response(status=status.HTTP_404_NOT_FOUND)
-
-@api_view(['GET'])
-def get_courses(request):
-    if request.method == 'GET':
-        courses = Course.objects.all()
-        serializer = CourseSerializer(courses,many=True)
-        
-        return Response(serializer.data)
-    
-    return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET','POST','PUT','DELETE'])
 def user_manager(request):
     if request.method == 'GET':
-        try:
-            if request.GET['email']:
-                user_email = request.GET['email']
+        user_email = request.GET.get('email')
+        if user_email:
+            try:
+                user = User.objects.get(email=user_email)
+                serializer = UserSerializer(user)
+                return Response(serializer.data)
+            except User.DoesNotExist:
+                return Response({'error':'User not found.'},status=status.HTTP_404_NOT_FOUND)
+        else:
+            users = User.objects.all()
+            serializer = UserSerializer(users,many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
-                try:
-                    user = User.objects.get(email=user_email)
-                    serializer = UserSerializer(user)
-                    return Response(serializer.data)
-                except:
-                    return Response(status=status.HTTP_404_NOT_FOUND)
-            else:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-            
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        
     if request.method == 'POST':
-        new_user = request.data
-        serializer = UserSerializer(data=new_user)
+        serializer = UserSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save()
@@ -57,26 +34,161 @@ def user_manager(request):
         return Response(status=status.HTTP_400_BAD_REQUEST)
     
     if request.method == 'PUT':
-        user = request.data['email']
-
         try:
-            updated_user = User.objects.get(email=user)
-        except:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        
-        serializer = UserSerializer(updated_user, data=request.data)
+            updated_user = User.objects.get(email=request.data['email'])
+            serializer = UserSerializer(updated_user, data=request.data)
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=status.HTTP_202_ACCEPTED)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(status=status.HTTP_202_ACCEPTED)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
     
     if request.method == 'DELETE':
         try:
             user_to_delete = User.objects.get(email=request.data['email'])
             user_to_delete.delete()
-            return Response(status=status.HTTP_202_ACCEPTED)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+def course_manager(request):
+    if request.method == 'GET':
+        try:
+            course_id = request.GET.get('id',None)
+            if course_id:
+                course = Course.objects.get(id=course_id)
+                serializer = CourseSerializer(course)
+                return Response(serializer.data)
+            else:
+                courses = Course.objects.all()
+                serializer = CourseSerializer(courses,many=True)
+                return Response(serializer.data)
+        except Course.DoesNotExist:
+            return Response({'error':'Course not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'POST':
+        serializer = CourseSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'PUT':
+        try:
+            updated_course = Course.objects.get(id=request.data['id'])
+            serializer = CourseSerializer(updated_course, data=request.data)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(status=status.HTTP_202_ACCEPTED)
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        
+        except Course.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'DELETE':
+        try:
+            course = Course.objects.get(id=request.data['id'])
+            course.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Course.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET','POST','PUT','DELETE'])
+def area_manager(request):
+    if request.method == 'GET':
+        try:
+            area_id = request.GET.get('id',None)
+            if area_id:
+                area = Area.objects.get(id=area_id)
+                serializer = AreaSerializer(area)
+                return Response(serializer.data)
+            else:
+                areas = Area.objects.all()
+                serializer = AreaSerializer(areas,many=True)
+                return Response(serializer.data)
+        except Area.DoesNotExist:
+            return Response({'error':'Area not found.'},status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'POST':
+        serializer = AreaSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        
+        return Response(status=status.HTTP_400_BAD_REQUEST)
     
+    if request.method == 'PUT':
+        try:
+            updated_area = Area.objects.get(id=request.data['id'])
+            serializer = AreaSerializer(updated_area, data=request.data)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(status=status.HTTP_202_ACCEPTED)
+            return Response(serializer.erros,status=status.HTTP_400_BAD_REQUEST)
+        except Area.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    if request.method == 'DELETE':
+        try:
+            area = Area.objects.get(id=request.data['id'])
+            area.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Area.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+def organization_manager(request):
+    if request.method == 'GET':
+        try:
+            organization_id = request.GET.get('id', None)
+            if organization_id:
+                organization = Organization.objects.get(id=organization_id)
+                serializer = OrganizationSerializer(organization)
+                return Response(serializer.data)
+            else:
+                organizations = Organization.objects.all()
+                serializer = OrganizationSerializer(organizations, many=True)
+                return Response(serializer.data)
+        except Organization.DoesNotExist:
+            return Response({'error': 'Organization not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'POST':
+        serializer = OrganizationSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'PUT':
+        try:
+            updated_organization = Organization.objects.get(id=request.data['id'])
+            serializer = OrganizationSerializer(updated_organization, data=request.data)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Organization.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'DELETE':
+        try:
+            organization = Organization.objects.get(id=request.data['id'])
+            organization.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Organization.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
