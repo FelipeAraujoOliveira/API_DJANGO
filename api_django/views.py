@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth import authenticate,login as auth_login
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -30,7 +31,6 @@ def user_manager(request):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
-        
         return Response(status=status.HTTP_400_BAD_REQUEST)
     
     if request.method == 'PUT':
@@ -192,3 +192,28 @@ def organization_manager(request):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Organization.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        
+
+@api_view(['POST'])
+def register(request):
+    serializer = UserSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
+    return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def login(request):
+    email = request.data['email']
+    password = request.data['password']
+
+    if email is None or password is None:
+        return Response({'error':'Email e senha são obrigatórios.'},status=status.HTTP_400_BAD_REQUEST)
+    
+    user = authenticate(request, email=email,password=password)
+
+    if user is not None:
+        return Response({'message':'Login bem-sucedido!','user':UserSerializer(user).data},status=status.HTTP_201_CREATED)
+    
+    return Response({'error':'Credenciais inválidas.'},status=status.HTTP_401_UNAUTHORIZED)
