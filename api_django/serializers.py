@@ -4,18 +4,20 @@ from django.contrib.auth.hashers import make_password
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    cpf = serializers.CharField(required=True)
     class Meta:
         model = User
-        #fields = ['name','id_course','email','ra']
-        fields = "__all__" 
-        
+        fields = ['cpf','name','id_course','email','ra','password','ensino_medio']
+        #fields = "__all__" 
 
-    def create(self, valitaded_data):
+    def create(self, validated_data):
         user = User(
-            email = valitaded_data['email'],
-            name=valitaded_data['name']
+            cpf = validated_data['cpf'],
+            email = validated_data['email'],
+            name=validated_data['name'],
+            ensino_medio=validated_data.get('ensino_medio',False)
         )
-        user.password = make_password(valitaded_data['password'])
+        user.password = make_password(validated_data['password'])
         user.save()
         return user
 
