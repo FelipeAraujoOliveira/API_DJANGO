@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Ambientes virtuais
+venv/
+env/
+.venv/
+.env
+
+# Arquivos do Docker
+*.log
+docker-compose.override.yml
+
+# Arquivos de IDEs
+.idea/
+*.sublime-project
+*.sublime-workspace
+.vscode/
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Configurações específicas do Django
+*.pot
+*.pyc
+*.pdb
+*.egg-info/
+.eggs/
+dist/
+build/

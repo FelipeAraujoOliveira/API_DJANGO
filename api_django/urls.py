@@ -1,12 +1,13 @@
 from django.contrib import admin
 from django.urls import path
-from . import views
+from .views import user_views,area_views,course_views,organization_views
 
 urlpatterns = [
-   path('users/',views.user_manager),
-   path('register/',views.register,name="register"),
-   path('login/',views.login, name="login"),
-   path('courses/',views.course_manager),
-   path('areas/',views.area_manager),
-   path('organizations/',views.organization_manager),
+   path('users/',user_views.UserManager.as_view()),
+   path('register/',user_views.RegisterView.as_view(),name="register"),
+   path('login/',user_views.LoginView.as_view(), name="login"),
+   path('courses/',course_views.CourseManager.as_view()),
+   path('areas/',area_views.AreaManager.as_view()),
+   path('organizations/',organization_views.OrganizationManager.as_view()),
+   path('email/',user_views.SendVerificationEmail.as_view())
 ]

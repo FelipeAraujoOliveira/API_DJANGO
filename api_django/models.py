@@ -17,7 +17,8 @@ class User(models.Model):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
     ra = models.CharField(max_length=7,null=True,blank=True)
-    
+    ensino_medio = models.BooleanField(default=False,blank=True)
+
     def __str__(self):
         return self.name
 
