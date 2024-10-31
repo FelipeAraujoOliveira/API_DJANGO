@@ -1,0 +1,35 @@
+services:
+  web:
+    container_name: django_app
+    image: jabriel23/django_app
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes: 
+      - .:/opt/api_django
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+
+  db:
+    container_name: postgres_dj
+    image: postgres:16.3
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init-db.sh:/docker-entrypoint-initdb.d/init-sb.sh
+
+  reactapp:
+      container_name: react-app
+      image: lucasgribeiro/unilife-react-app:1.0
+      ports:
+          - '5173:5173'
+
+volumes:
+  postgres_data:

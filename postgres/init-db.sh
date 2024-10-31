@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+
+psql -U postgres <<-EOSQL
+    CREATE DATABASE ${DB_NAME};
+    CREATE USER ${DB_USER} WITH PASSWORD '${DB_PASSWORD}';
+    GRANT ALL PRIVILEGES ON DATABASE ${DB_NAME} TO ${DB_USER};
+EOSQL
