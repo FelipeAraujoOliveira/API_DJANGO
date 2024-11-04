@@ -4,6 +4,7 @@ from rest_framework import status
 from django.contrib.auth.hashers import check_password
 from django.core.mail import send_mail
 from django.core.cache import cache
+from django.shortcuts import render
 from ..models import User
 from ..serializers import UserSerializer, EmailVerificationSerializer
 from dotenv import load_dotenv
@@ -113,3 +114,18 @@ class SendVerificationEmail(APIView):
                 return Response({'error': 'Falha ao enviar o e-mail.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserTemplate:
+    def user_list(request):
+        ensino_medio_filter = request.GET.get('ensino_medio')
+
+        if ensino_medio_filter is not None:
+            users = User.objects.filter(ensino_medio=ensino_medio_filter == 'true')
+        else:
+            users = User.objects.all()
+
+        context = {
+            'users': users,
+            'ensino_medio_filter': ensino_medio_filter == 'true'
+        }
+        return render(request, 'user_list.html', context)
