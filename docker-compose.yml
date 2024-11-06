@@ -11,6 +11,8 @@ services:
       - db
     env_file:
       - ./.env
+    networks:
+      - app-network
 
   db:
     container_name: postgres_dj
@@ -24,12 +26,20 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/init-db.sh:/docker-entrypoint-initdb.d/init-sb.sh
+    networks:
+      - app-network
 
   reactapp:
       container_name: react-app
-      image: lucasgribeiro/unilife-react-app:1.0
+      image: jabriel23/front_unilife:tag
       ports:
           - '5173:5173'
+      networks:
+      - app-network
 
 volumes:
   postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
