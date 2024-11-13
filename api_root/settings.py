@@ -134,11 +134,11 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ORIGINS = {
+CORS_ALLOW_ORIGINS = [
     'http://localhost:8000',
     'http://localhost:5173',
     'http://reactapp:5173',
-}
+]
 
 load_dotenv()
 
