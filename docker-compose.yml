@@ -30,16 +30,16 @@ services:
       - app-network
 
   reactapp:
-      container_name: react-app
-      image: jabriel23/front_unilife:tag
-      ports:
-          - '5173:5173'
-     environment:
+    container_name: react-app
+    image: jabriel23/front_unilife:tag
+    ports:
+      - '5173:5173'
+    environment:
       - REACT_APP_API_URL=http://web:8000/api  # Definindo a URL da API para o frontend React
     depends_on:
       - web
     networks:
-    - app-network
+      - app-network
 
 volumes:
   postgres_data:
