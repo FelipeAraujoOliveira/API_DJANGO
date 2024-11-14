@@ -1,0 +1,60 @@
+/* Definindo a cor de fundo da página */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f9f9f9;  /* Ajuste do fundo da página */
+    margin: 0;
+    padding: 0;
+}
+
+/* Título principal */
+h1 {
+    color: #000000;  /* Cor preta para o título */
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Estilo da tabela */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+/* Tabela: cor preta para o conteúdo da tabela */
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    font-size: 16px;
+    color: #000000;  /* Cor preta para o texto dentro da tabela */
+}
+
+/* Estilo das células de cabeçalho */
+th {
+    background-color: #0674B8;
+    color: #ffffff;  /* Cor branca para o texto do cabeçalho */
+}
+
+/* Estilo dos botões de filtro */
+button {
+    padding: 10px 15px;
+    background-color: #0674B8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 5px;
+}
+
+button:hover {
+    background-color: #055b88;  /* Alteração da cor de fundo ao passar o mouse */
+}
+
+/* Estilo para quando não houver usuários */
+td[colspan="4"] {
+    text-align: center;
+    color: #888;  /* Cor mais clara quando não houver dados */
+}
