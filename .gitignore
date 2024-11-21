@@ -8,6 +8,7 @@ __pycache__/
 
 # Ambientes virtuais
 venv/
+venvf/
 env/
 .venv/
 .env

@@ -12,7 +12,7 @@ services:
     env_file:
       - ./.env
     networks:
-      - app-network
+      - django_register_app-network
 
   db:
     container_name: postgres_dj
@@ -27,7 +27,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/init-db.sh:/docker-entrypoint-initdb.d/init-sb.sh
     networks:
-      - app-network
+      - django_register_app-network
 
   reactapp:
     container_name: react-app
@@ -39,11 +39,11 @@ services:
     depends_on:
       - web
     networks:
-      - app-network
+      - django_register_app-network
 
 volumes:
   postgres_data:
 
 networks:
-  app-network:
+  django_register_app-network:
     driver: bridge

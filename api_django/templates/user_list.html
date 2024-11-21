@@ -2,7 +2,15 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Usuários</title>
+    
+    <!-- Carregar arquivos estáticos do Django -->
+    {% load static %}
+    
+    <!-- Referenciar o arquivo CSS -->
+    <link rel="stylesheet" href="{% static '/user_list.css' %}">  <!-- Caminho do CSS no diretório static -->
+    
     <script>
         function filterUsers(ensinoMedio) {
             const url = new URL(window.location.href);
@@ -16,37 +24,41 @@
     </script>
 </head>
 <body>
-    <h1>Lista de Usuários</h1>
+    <div class="container">
+        <h1>Lista de Usuários</h1>
 
-    <!-- Botões para filtrar os alunos por ensino_medio -->
-    <button onclick="filterUsers(null)">Todos</button>
-    <button onclick="filterUsers('true')">Ensino Médio - Sim</button>
-    <button onclick="filterUsers('false')">Ensino Médio - Não</button>
+        <!-- Contêiner dos botões para filtrar os alunos -->
+        <div class="buttons-container">
+            <button onclick="filterUsers(null)">Todos</button>
+            <button onclick="filterUsers('true')">Ensino Médio - Sim</button>
+            <button onclick="filterUsers('false')">Ensino Médio - Não</button>
+        </div>
 
-    <!-- Tabela de usuários -->
-    <table border="1">
-        <thead>
-            <tr>
-                <th>RA</th>
-                <th>Nome</th>
-                <th>Curso</th>
-                <th>Ensino Médio</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
+        <!-- Tabela de usuários -->
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ user.ra }}</td>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.id_course.name }}</td>
-                    <td>{{ user.ensino_medio|yesno:"Sim,Não" }}</td>
+                    <th>RA</th>
+                    <th>Nome</th>
+                    <th>Curso de Interesse</th>
+                    <th>Ensino Médio</th>
                 </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="4">Nenhum usuário encontrado.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.ra }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.id_course }}</td>
+                        <td>{{ user.ensino_medio|yesno:"Sim,Não" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4">Nenhum usuário encontrado.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

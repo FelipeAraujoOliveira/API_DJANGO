@@ -8,19 +8,19 @@ class UserSerializer(serializers.ModelSerializer):
     ensino_medio = serializers.BooleanField(read_only=True)
     class Meta:
         model = User
-        fields = ['cpf','name','id_course','email','ra','password','ensino_medio']
-        #fields = "__all__" 
+        fields = ['cpf', 'name', 'id_course', 'email', 'ra', 'password', 'ensino_medio']
 
     def create(self, validated_data):
-        ensino_medio=validated_data.get('ra') is None
-        #validated_data['ensino_meido'] = ensino_medio
-
+        ensino_medio = validated_data.get('ra') is None
+        id_course = validated_data.get('id_course')
+        
         user = User(
-            cpf = validated_data['cpf'],
-            email = validated_data['email'],
-            name = validated_data['name'],
-            ra = validated_data.get('ra'),
-            ensino_medio = ensino_medio
+            cpf=validated_data['cpf'],
+            email=validated_data['email'],
+            name=validated_data.get('name'),
+            ra=validated_data.get('ra'),
+            ensino_medio=ensino_medio,
+            id_course=id_course
         )
         user.password = make_password(validated_data['password'])
         user.save()
@@ -29,7 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = ['name','duration']
+        fields = ['id', 'name','duration']
 
 class AreaSerializer(serializers.ModelSerializer):
     class Meta:
